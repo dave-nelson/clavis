@@ -6,6 +6,13 @@ Instruments TI CF60137N 28-pin controller.  It features Cherry MX black
 keyswitches, double-shot keycaps (navy blue and yellow on grey), and a large 
 ISO-style Enter key.
 
+Project gallery
+---------------
+
+Photos of a converted WY85 are available in the [Wyse WY85](http://imgur.com/a/rBTpp)
+photo gallery.
+
+
 Matrix
 ------
 
