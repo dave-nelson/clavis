@@ -24,6 +24,7 @@
 #include "usb_keyboard.h"
 #include "matrix.h"
 #include "led.h"
+#include "project.h"
 
 #define CPU_PRESCALE(n)	(CLKPR = 0x80, CLKPR = (n))
 
@@ -40,5 +41,6 @@ int main(void)
     while (1) { 
         Matrix_scan ();
         Led_set ();
+        _delay_us (POLL_DELAY_USEC);
     }
 }

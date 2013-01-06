@@ -40,7 +40,6 @@ Matrix_send (void)
     Key * key;
     uint8_t i_col, i_row;
     uint8_t key_count = 0;
-    // usb_keyboard_press(KEY_C, 0);
 
     keyboard_modifier_keys = 0;
 
@@ -55,7 +54,6 @@ Matrix_send (void)
                 else {
                     if ( key_count < 6 ) {
                         keyboard_keys[key_count] = key->name;
-                        // usb_keyboard_press(key->name, 0);
                         key_count++;
                     }
                 }
@@ -65,7 +63,6 @@ Matrix_send (void)
     for ( ; key_count < 6; key_count++ ) {
         keyboard_keys[key_count] = 0;
     }
-    // usb_keyboard_press(KEY_SPACE, 0);
 
     usb_keyboard_send ();
 }
@@ -80,42 +77,21 @@ Matrix_scan ()
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
         *(columns[i_col].port) &= ~(1 << columns[i_col].pin);
-        _delay_us (500);
+        _delay_us (PIN_DELAY_USEC);
 
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
             key = &(matrix[i_col][i_row]);
-            // key_down = (*(key->port) & (1 << key->pin)) ? 0 : 1;
             key_down = (*(rows[i_row].port) & (1 << rows[i_row].pin)) ? 0 : 1;
             key->samples = (((key->samples << 1) | key_down) & samples_mask);
-            /*
-            if ( key_down ) {
-                    samples = key->samples;
-        	    usb_keyboard_press(key->name, 0);
-                    // usb_keyboard_press(hex[samples >> 4], 0);
-                    usb_keyboard_press(hex[samples & 0x0f], 0);
-            }
-            */
             if ( key->samples != key->state ) {
                 if ( key->samples == 0x00 || key->samples == samples_mask ) {
                     /* Key is in a stable state (debounced) */
                     key->state = key->samples;
                     matrix_is_changed = true;
-        	    
-                    /* Debug */
-/*
-                    usb_keyboard_press(key->name, 0);
-                    if ( key->state == samples_mask ) {
-        		usb_keyboard_press(KEYPAD_PLUS, 0);
-                    }
-                    else {
-        		usb_keyboard_press(KEYPAD_MINUS, 0);
-                    }
-*/
                 }
             }
         }
         *(columns[i_col].port) |= (1 << columns[i_col].pin);
-        // _delay_ms (10);
     }
     if ( matrix_is_changed ) {
         Matrix_send ();

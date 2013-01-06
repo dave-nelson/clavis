@@ -56,4 +56,18 @@
  */
 #define NUM_LEDS 3
 
+/**
+ * Delay (in microseconds) between applying power to a column output pin and 
+ * starting to poll the row input pins.
+ *
+ * Note that this figure will be sensitive to the speed of any protective 
+ * diodes in front of the output pins.
+ */
+#define PIN_DELAY_USEC 20
+
+/**
+ * Delay (in microseconds) after performing one full scan of the matrix.
+ */
+#define POLL_DELAY_USEC 800
+
 #endif

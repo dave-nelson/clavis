@@ -27,7 +27,7 @@
 
 Port ports[NUM_PORTS] = {
     /* Inputs, pullup resistors */
-    { &DDRD, 0x00, &PORTD, 0xff },
+    { &DDRD, 0x00, &PORTD, ~(1 << PIND6) }, /* Not D6: internal LED */
     { &DDRF, 0x00, &PORTF, 0xff },
     /* Output, high */
     { &DDRB, 0xFF, &PORTB, 0xff },
@@ -38,14 +38,14 @@ Port ports[NUM_PORTS] = {
 
 Pin columns[NUM_COLS] = {
     /* TI CF60137N pins 1-8 */
-    { &PORTB, DDB0 },
-    { &PORTB, DDB1 },
-    { &PORTB, DDB2 },
-    { &PORTB, DDB3 },
-    { &PORTB, DDB4 },
-    { &PORTB, DDB5 },
-    { &PORTB, DDB6 },
-    { &PORTB, DDB7 },
+    { &PORTB, PINB0 },
+    { &PORTB, PINB1 },
+    { &PORTB, PINB2 },
+    { &PORTB, PINB3 },
+    { &PORTB, PINB4 },
+    { &PORTB, PINB5 },
+    { &PORTB, PINB6 },
+    { &PORTB, PINB7 },
 };
 
 Pin rows[NUM_ROWS] = {
