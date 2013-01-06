@@ -42,12 +42,24 @@ Matrix_send (void)
     uint8_t key_count = 0;
 
     keyboard_modifier_keys = 0;
+#if DE_GHOST
+    uint8_t col_counter[NUM_COLS] = { 0, };
+    uint8_t row_counter[NUM_ROWS] = { 0, };
+    uint8_t total_count = 0;
+    bool is_ghostly = false;
+#endif
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
 
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
             key = &(matrix[i_col][i_row]);
             if ( key->state == samples_mask ) {
+                /* Key is down */
+#if DE_GHOST
+                col_counter[i_col] += 1;
+                row_counter[i_row] += 1;
+                total_count += 1;
+#endif
                 if ( key->modifier ) {
                     keyboard_modifier_keys |= key->modifier;
                 }
@@ -63,8 +75,28 @@ Matrix_send (void)
     for ( ; key_count < 6; key_count++ ) {
         keyboard_keys[key_count] = 0;
     }
+#if DE_GHOST
+    if ( total_count > 3 ) {
+        /* Could be ghosts? */
+        for ( i_col = 0; i_col < NUM_COLS && !is_ghostly; i_col++ ) {
 
+            for ( i_row = 0; i_row < NUM_ROWS && !is_ghostly; i_row++ ) {
+                key = &(matrix[i_col][i_row]);
+                if ( key->state == samples_mask ) {
+                    if ( col_counter[i_col] > 1 && row_counter[i_row] > 1 ) {
+                        is_ghostly = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    if ( !is_ghostly ) {
+        usb_keyboard_send ();
+    }
+#else
     usb_keyboard_send ();
+#endif
 }
 
 void

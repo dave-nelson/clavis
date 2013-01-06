@@ -70,4 +70,9 @@
  */
 #define POLL_DELAY_USEC 800
 
+/**
+ * Should de-ghosting be invoked (for 2kro keyboards)?
+ */
+#define DE_GHOST 1
+
 #endif
