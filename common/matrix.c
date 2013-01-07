@@ -43,7 +43,6 @@ Matrix_block (void)
     uint8_t col_counter[NUM_COLS] = { 0, };
     uint8_t row_counter[NUM_ROWS] = { 0, };
     uint8_t total_count = 0;
-    static bool is_blocking = false;
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
@@ -62,19 +61,11 @@ Matrix_block (void)
                         col_counter[i_col] > 1 && 
                         row_counter[i_row] > 1 ) {
                     do_block = true;
-                    is_blocking = true;
                     break;
                 }
             }
         }
     }
-    if ( is_blocking && ! do_block ) {
-        /* Wait a short time for the matrix to stabilise, and block one more time */
-        is_blocking = false;
-        do_block = true;
-        _delay_ms (10);
-    }
-
     return do_block;
 }
 
