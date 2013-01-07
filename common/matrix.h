@@ -61,7 +61,6 @@ typedef struct {
     uint8_t state;  /* All unmasked bits 1: on, else off */
 } Key;
 
-
 extern Key matrix[NUM_COLS][NUM_ROWS];
 
 /* Mask, for ignoring high bits in a sample bit array.  (Samples are stored in 

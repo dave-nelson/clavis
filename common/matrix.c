@@ -20,6 +20,7 @@
 #include "matrix.h"
 #include <util/delay.h>
 
+bool selected_keys[NUM_COLS][NUM_ROWS];
 
 void
 Matrix_ports_init (void)
@@ -34,6 +35,49 @@ Matrix_ports_init (void)
     }
 }
 
+bool
+Matrix_block (void)
+{
+    bool do_block = false;
+    uint8_t i_col, i_row;
+    uint8_t col_counter[NUM_COLS] = { 0, };
+    uint8_t row_counter[NUM_ROWS] = { 0, };
+    uint8_t total_count = 0;
+    static bool is_blocking = false;
+
+    for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
+        for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
+            if ( selected_keys[i_col][i_row] ) {
+                col_counter[i_col] += 1;
+                row_counter[i_row] += 1;
+                total_count += 1;
+            }
+        }
+    }
+    if ( total_count > 2 ) {
+        /* Could be ghosts? */
+        for ( i_col = 0; i_col < NUM_COLS && !do_block; i_col++ ) {
+            for ( i_row = 0; i_row < NUM_ROWS && !do_block; i_row++ ) {
+                if ( selected_keys[i_col][i_row] && 
+                        col_counter[i_col] > 1 && 
+                        row_counter[i_row] > 1 ) {
+                    do_block = true;
+                    is_blocking = true;
+                    break;
+                }
+            }
+        }
+    }
+    if ( is_blocking && ! do_block ) {
+        /* Wait a short time for the matrix to stabilise, and block one more time */
+        is_blocking = false;
+        do_block = true;
+        _delay_ms (10);
+    }
+
+    return do_block;
+}
+
 void
 Matrix_send (void)
 {
@@ -42,24 +86,11 @@ Matrix_send (void)
     uint8_t key_count = 0;
 
     keyboard_modifier_keys = 0;
-#if DE_GHOST
-    uint8_t col_counter[NUM_COLS] = { 0, };
-    uint8_t row_counter[NUM_ROWS] = { 0, };
-    uint8_t total_count = 0;
-    bool is_ghostly = false;
-#endif
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
-
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
-            key = &(matrix[i_col][i_row]);
-            if ( key->state == samples_mask ) {
-                /* Key is down */
-#if DE_GHOST
-                col_counter[i_col] += 1;
-                row_counter[i_row] += 1;
-                total_count += 1;
-#endif
+            if ( selected_keys[i_col][i_row] ) {
+                key = &(matrix[i_col][i_row]);
                 if ( key->modifier ) {
                     keyboard_modifier_keys |= key->modifier;
                 }
@@ -75,28 +106,7 @@ Matrix_send (void)
     for ( ; key_count < 6; key_count++ ) {
         keyboard_keys[key_count] = 0;
     }
-#if DE_GHOST
-    if ( total_count > 3 ) {
-        /* Could be ghosts? */
-        for ( i_col = 0; i_col < NUM_COLS && !is_ghostly; i_col++ ) {
-
-            for ( i_row = 0; i_row < NUM_ROWS && !is_ghostly; i_row++ ) {
-                key = &(matrix[i_col][i_row]);
-                if ( key->state == samples_mask ) {
-                    if ( col_counter[i_col] > 1 && row_counter[i_row] > 1 ) {
-                        is_ghostly = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    if ( !is_ghostly ) {
-        usb_keyboard_send ();
-    }
-#else
     usb_keyboard_send ();
-#endif
 }
 
 void
@@ -119,6 +129,7 @@ Matrix_scan ()
                 if ( key->samples == 0x00 || key->samples == samples_mask ) {
                     /* Key is in a stable state (debounced) */
                     key->state = key->samples;
+                    selected_keys[i_col][i_row] = (key->state == samples_mask);
                     matrix_is_changed = true;
                 }
             }
@@ -126,6 +137,12 @@ Matrix_scan ()
         *(columns[i_col].port) |= (1 << columns[i_col].pin);
     }
     if ( matrix_is_changed ) {
+#if DE_GHOST
+        if ( ! Matrix_block () ) {
+            Matrix_send ();
+        }
+#else
         Matrix_send ();
+#endif
     }
 }
