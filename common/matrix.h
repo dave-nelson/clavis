@@ -27,6 +27,12 @@
 #include "usb_keyboard.h"
 #include "project.h"
 
+/**
+ * Convenience macro to get the index of a key given its column and row.
+ */
+#define KEY_NUM(col,row)    \
+    (row * NUM_COLS + col)
+
 /* Configuration for port I/O */
 
 typedef struct {
@@ -61,7 +67,35 @@ typedef struct {
     uint8_t state;  /* All unmasked bits 1: on, else off */
 } Key;
 
-extern Key matrix[NUM_COLS][NUM_ROWS];
+/**
+ * Keyboard matrix definition.
+ *
+ * This needs to be defined for every project, depending on the layout of the 
+ * hardware.
+ */
+extern Key matrix[NUM_COLS * NUM_ROWS];
+
+/**
+ * Current key selection.
+ *
+ * On each scan of the matrix, this array is updated with the currently 
+ * selected (i.e. closed) keys.
+ */
+extern bool selection[NUM_COLS * NUM_ROWS];
+
+/**
+ * Callback: hack the matrix and/or current key selection.
+ *
+ * Matrix_hack is called whenever the keys are changed, before they are 
+ * de-ghosted and sent to the host.  Can be used to implement custom 
+ * modifications to the matrix keys and/or the current selection.  Point 
+ * Matrix_hack to some function, or set it to 0 to disable hacks.
+ *
+ * If enabled, a return value of true means proceed: send the keys.  False 
+ * means block: don't send keys to the host (this can be useful if the hack 
+ * involves sending other arbitrary key combinations to the host directly).
+ */
+extern bool (* Matrix_hack) (void);
 
 /* Mask, for ignoring high bits in a sample bit array.  (Samples are stored in 
  * the low bits.) */

@@ -20,7 +20,7 @@
 #include "matrix.h"
 #include <util/delay.h>
 
-bool selected_keys[NUM_COLS][NUM_ROWS];
+bool selection[NUM_COLS * NUM_ROWS] = { 0, };
 
 void
 Matrix_ports_init (void)
@@ -46,7 +46,7 @@ Matrix_block (void)
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
-            if ( selected_keys[i_col][i_row] ) {
+            if ( selection[ KEY_NUM(i_col, i_row) ] ) {
                 col_counter[i_col] += 1;
                 row_counter[i_row] += 1;
                 total_count += 1;
@@ -57,7 +57,7 @@ Matrix_block (void)
         /* Could be ghosts? */
         for ( i_col = 0; i_col < NUM_COLS && !do_block; i_col++ ) {
             for ( i_row = 0; i_row < NUM_ROWS && !do_block; i_row++ ) {
-                if ( selected_keys[i_col][i_row] && 
+                if ( selection[ KEY_NUM(i_col, i_row) ] && 
                         col_counter[i_col] > 1 && 
                         row_counter[i_row] > 1 ) {
                     do_block = true;
@@ -80,8 +80,8 @@ Matrix_send (void)
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
-            if ( selected_keys[i_col][i_row] ) {
-                key = &(matrix[i_col][i_row]);
+            if ( selection[ KEY_NUM(i_col, i_row) ] ) {
+                key = &(matrix[ KEY_NUM(i_col, i_row) ]);
                 if ( key->modifier ) {
                     keyboard_modifier_keys |= key->modifier;
                 }
@@ -113,14 +113,14 @@ Matrix_scan ()
         _delay_us (PIN_DELAY_USEC);
 
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
-            key = &(matrix[i_col][i_row]);
+            key = &(matrix[ KEY_NUM(i_col, i_row) ]);
             key_down = (*(rows[i_row].port) & (1 << rows[i_row].pin)) ? 0 : 1;
             key->samples = (((key->samples << 1) | key_down) & samples_mask);
             if ( key->samples != key->state ) {
                 if ( key->samples == 0x00 || key->samples == samples_mask ) {
                     /* Key is in a stable state (debounced) */
                     key->state = key->samples;
-                    selected_keys[i_col][i_row] = (key->state == samples_mask);
+                    selection[ KEY_NUM(i_col, i_row) ] = (key->state == samples_mask);
                     matrix_is_changed = true;
                 }
             }
@@ -128,12 +128,14 @@ Matrix_scan ()
         *(columns[i_col].port) |= (1 << columns[i_col].pin);
     }
     if ( matrix_is_changed ) {
+        if ( !(Matrix_hack) || (*Matrix_hack) () ) {
 #if DE_GHOST
-        if ( ! Matrix_block () ) {
-            Matrix_send ();
-        }
+            if ( ! Matrix_block () ) {
+                Matrix_send ();
+            }
 #else
-        Matrix_send ();
+            Matrix_send ();
 #endif
+        }
     }
 }
