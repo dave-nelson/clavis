@@ -47,12 +47,6 @@ extern Port ports[NUM_PORTS];
 typedef struct {
     volatile uint8_t * port;
     uint8_t pin;
-} Column;
-
-
-typedef struct {
-    volatile uint8_t * port;
-    uint8_t pin;
 } Pin;
 
 extern Pin columns[NUM_COLS];
@@ -61,7 +55,7 @@ extern Pin rows[NUM_ROWS];
 /* Key */
 
 typedef struct {
-    uint8_t name;  /* USB key name: regular characters */
+    uint8_t code;  /* USB HID spec key code, for regular characters */
     uint8_t modifier;  /* USB modifier flag for shift, ctrl etc. */
     uint8_t samples;
     uint8_t state;  /* All unmasked bits 1: on, else off */

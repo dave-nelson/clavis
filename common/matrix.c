@@ -85,12 +85,13 @@ Matrix_send (void)
                 if ( key->modifier ) {
                     keyboard_modifier_keys |= key->modifier;
                 }
-                else {
+                else if ( key->code ) {
                     if ( key_count < 6 ) {
-                        keyboard_keys[key_count] = key->name;
+                        keyboard_keys[key_count] = key->code;
                         key_count++;
                     }
                 }
+                /* else ignore unused key */
             }
         }
     }
