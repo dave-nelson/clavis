@@ -135,7 +135,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEY_LEFT_BRACE, }, 
     { KEY_BACKSPACE, }, 
     { KEY_P, }, 
-    { KEY_INSERT, }, 
+    { KEY_HOME, },  /* Wyse "Insert Here" */ 
     { 0x00, KEY_CTRL }, 
     { KEY_F7, }, 
 
@@ -150,7 +150,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEY_F6, }, 
 
     /* 8 (pin 24) */
-    { KEY_HOME, }, 
+    { KEY_INSERT, },  /* Wyse "Find" */ 
     { KEYPAD_3, }, 
     { KEYPAD_9, }, 
     { KEY_M, }, 
@@ -161,7 +161,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
 
     /* 9 (pin 25) */
     { KEYPAD_ENTER, }, 
-    { KEY_PAGE_DOWN, }, 
+    { KEY_PAGE_DOWN, },  /* Wyse "Next Scrn" */
     { KEYPAD_8, }, 
     { KEY_B, }, 
     { KEY_2, }, 
@@ -172,7 +172,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     /* 10 (pin 26) */
     { KEYPAD_PLUS, },  /* Numberpad "," */
     { KEYPAD_PLUS, }, 
-    { KEY_PAGE_UP, }, 
+    { KEY_END, },  /* Wyse "Prev Scrn" */
     { KEY_N, }, 
     { KEY_1, }, 
     { KEY_U, }, 
@@ -183,7 +183,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEY_SLASH, }, 
     { KEY_PERIOD, }, 
     { KEY_COMMA, }, 
-    { KEY_END, }, 
+    { KEY_DELETE, },   /* Select */
     { KEY_TILDE, }, 
     { KEY_Y, }, 
     { KEY_A, }, 
@@ -194,7 +194,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEY_6, }, 
     { KEY_5, }, 
     { KEY_4, }, 
-    { KEY_DELETE, }, 
+    { KEY_PAGE_UP, },  /* Wyse "Remove" */ 
     { KEY_T, }, 
     { KEY_CAPS_LOCK, }, 
     { KEY_F8, }, 

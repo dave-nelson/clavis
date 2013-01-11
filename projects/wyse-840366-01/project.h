@@ -63,12 +63,12 @@
  * Note that this figure will be sensitive to the speed of any protective 
  * diodes in front of the output pins.
  */
-#define PIN_DELAY_USEC 20
+#define PIN_DELAY_USEC 50
 
 /**
  * Delay (in microseconds) after performing one full scan of the matrix.
  */
-#define POLL_DELAY_USEC 800
+#define POLL_DELAY_USEC 1500
 
 /**
  * Should de-ghosting be invoked (for 2kro keyboards)?
