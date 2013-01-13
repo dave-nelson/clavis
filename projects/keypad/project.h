@@ -71,6 +71,14 @@
 #define POLL_DELAY_USEC 800
 
 /**
+ * Samples mask: significant bits for sampling.
+ *
+ * Each bit means 1 sample, e.g. 0x0f = 00001111 means four samples.
+ */
+
+#define SAMPLES_MASK 0x0f
+
+/**
  * Should de-ghosting be invoked (for 2kro keyboards)?
  */
 #define DE_GHOST 0

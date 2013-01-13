@@ -68,7 +68,19 @@
 /**
  * Delay (in microseconds) after performing one full scan of the matrix.
  */
-#define POLL_DELAY_USEC 1500
+#define POLL_DELAY_USEC 1200
+
+/**
+ * Samples mask: significant bits for sampling.
+ *
+ * Each bit means 1 sample, e.g. 0x0f = 00001111 means four samples.
+ *
+ * Cherry MX: bounce time <= 5ms 
+ * (http://www.cherrycorp.com/english/switches/key/mx.htm).  Four samples with 
+ * a delay of (50 + 1200) usec should be right.
+ */
+
+#define SAMPLES_MASK 0x0f
 
 /**
  * Should de-ghosting be invoked (for 2kro keyboards)?

@@ -201,10 +201,6 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
 
 };
 
-
-uint8_t samples_mask = 0x0f;
-
-
 Led leds[NUM_LEDS] = {
     { 0x01, &PORTC, DDC6 },  /* Num Lock */
     { 0x02, &PORTC, DDC7 },  /* Caps Lock */

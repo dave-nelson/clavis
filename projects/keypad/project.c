@@ -39,11 +39,6 @@ Key matrix[NUM_COLS * NUM_ROWS] = {
 };
 
 /**
- * Take four samples (i.e. 00001111) before registering a keystroke.
- */
-uint8_t samples_mask = 0x0F;
-
-/**
  * No matrix hacks required for this project.
  */
 bool (* Matrix_hack) (void) = 0;

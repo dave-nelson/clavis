@@ -116,12 +116,12 @@ Matrix_scan ()
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
             key = &(matrix[ KEY_NUM(i_col, i_row) ]);
             key_down = (*(rows[i_row].port) & (1 << rows[i_row].pin)) ? 0 : 1;
-            key->samples = (((key->samples << 1) | key_down) & samples_mask);
+            key->samples = (((key->samples << 1) | key_down) & SAMPLES_MASK);
             if ( key->samples != key->state ) {
-                if ( key->samples == 0x00 || key->samples == samples_mask ) {
+                if ( key->samples == 0x00 || key->samples == SAMPLES_MASK ) {
                     /* Key is in a stable state (debounced) */
                     key->state = key->samples;
-                    selection[ KEY_NUM(i_col, i_row) ] = (key->state == samples_mask);
+                    selection[ KEY_NUM(i_col, i_row) ] = (key->state == SAMPLES_MASK);
                     matrix_is_changed = true;
                 }
             }
