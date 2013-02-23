@@ -18,6 +18,7 @@
  */
 
 #include "matrix.h"
+#include "boot_keyboard.h"
 #include <util/delay.h>
 
 bool selection[NUM_COLS * NUM_ROWS] = { 0, };
@@ -74,31 +75,22 @@ Matrix_send (void)
 {
     Key * key;
     uint8_t i_col, i_row;
-    uint8_t key_count = 0;
 
-    keyboard_modifier_keys = 0;
+    // keyboard_modifier_keys = 0;
+    boot_keyboard_clear ();
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
             if ( selection[ KEY_NUM(i_col, i_row) ] ) {
                 key = &(matrix[ KEY_NUM(i_col, i_row) ]);
-                if ( key->modifier ) {
-                    keyboard_modifier_keys |= key->modifier;
-                }
-                else if ( key->code ) {
-                    if ( key_count < 6 ) {
-                        keyboard_keys[key_count] = key->code;
-                        key_count++;
-                    }
+                if ( key->code ) {
+                    boot_keyboard_set_key (key->code);
                 }
                 /* else ignore unused key */
             }
         }
     }
-    for ( ; key_count < 6; key_count++ ) {
-        keyboard_keys[key_count] = 0;
-    }
-    usb_keyboard_send ();
+    boot_keyboard_send ();
 }
 
 void

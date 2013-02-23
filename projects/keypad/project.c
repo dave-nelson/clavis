@@ -1,5 +1,6 @@
 #include "project.h"
 #include "../../common/matrix.h"
+#include "../../common/keyboard.h"
 
 /**
  * Based on the settings in project.h, initialise all the statics declared by matrix.h.
@@ -34,7 +35,7 @@ Key matrix[NUM_COLS * NUM_ROWS] = {
     { KEYPAD_1, }, { KEYPAD_2, }, { KEYPAD_3, },
     { KEYPAD_4, }, { KEYPAD_5, }, { KEYPAD_6, }, 
     { KEYPAD_7, }, { KEYPAD_8, }, { KEYPAD_9, }, 
-    { KEYPAD_ASTERIX, }, { KEYPAD_0, },{ KEYPAD_PERIOD, },
+    { KEYPAD_STAR, }, { KEYPAD_0, },{ KEYPAD_HASH, },
 
 };
 

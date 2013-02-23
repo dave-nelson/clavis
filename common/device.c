@@ -1,6 +1,63 @@
+/*
+ * Copyright 2013 David Robert Nelson.
+ *
+ * This file is part of Clavis.
+ * 
+ * Clavis is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Clavis is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Clavis.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "device.h"
 #define USB_SERIAL_PRIVATE_INCLUDE
 #include "usb_keyboard.h"
+#include "boot_keyboard.h"
+
+// You can change these to give your code its own name.
+#define STR_MANUFACTURER	L"MfgName"
+#define STR_PRODUCT		L"Keyboard"
+
+
+// Mac OS-X and Linux automatically load the correct drivers.  On
+// Windows, even though the driver is supplied by Microsoft, an
+// INF file is needed to load the driver.  These numbers need to
+// match the INF file.
+#define VENDOR_ID		0x16C0
+#define PRODUCT_ID		0x047C
+
+struct usb_string_descriptor_struct {
+	uint8_t bLength;
+	uint8_t bDescriptorType;
+	int16_t wString[];
+};
+
+// If you're desperate for a little extra code memory, these strings
+// can be completely removed if iManufacturer, iProduct, iSerialNumber
+// in the device desciptor are changed to zeros.
+static struct usb_string_descriptor_struct PROGMEM string0 = {
+	4,
+	3,
+	{0x0409}
+};
+static struct usb_string_descriptor_struct PROGMEM string1 = {
+	sizeof(STR_MANUFACTURER),
+	3,
+	STR_MANUFACTURER
+};
+static struct usb_string_descriptor_struct PROGMEM string2 = {
+	sizeof(STR_PRODUCT),
+	3,
+	STR_PRODUCT
+};
 
 const uint8_t PROGMEM endpoint_config_table[ENDPOINT_CONFIG_SIZE] = {
     // Endpoint 1
@@ -12,13 +69,6 @@ const uint8_t PROGMEM endpoint_config_table[ENDPOINT_CONFIG_SIZE] = {
     // Endpoint 4
     0
 };
-
-/**************************************************************************
- *
- *  Configurable Options
- *
- **************************************************************************/
-
 
 // USB devices are supposed to implment a halt feature, which is
 // rarely (if ever) used.  If you comment this line out, the halt
@@ -40,7 +90,6 @@ const uint8_t PROGMEM endpoint_config_table[ENDPOINT_CONFIG_SIZE] = {
 // changed items are editable at the top of this file.  Changing things
 // in here should only be done by those who've read chapter 9 of the USB
 // spec and relevant portions of any USB class specifications!
-
 
 static uint8_t PROGMEM device_descriptor[] = {
 	18,					// bLength
@@ -136,25 +185,6 @@ static uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	1					// bInterval
 };
 
-// If you're desperate for a little extra code memory, these strings
-// can be completely removed if iManufacturer, iProduct, iSerialNumber
-// in the device desciptor are changed to zeros.
-static struct usb_string_descriptor_struct PROGMEM string0 = {
-	4,
-	3,
-	{0x0409}
-};
-static struct usb_string_descriptor_struct PROGMEM string1 = {
-	sizeof(STR_MANUFACTURER),
-	3,
-	STR_MANUFACTURER
-};
-static struct usb_string_descriptor_struct PROGMEM string2 = {
-	sizeof(STR_PRODUCT),
-	3,
-	STR_PRODUCT
-};
-
 struct descriptor_list_struct PROGMEM descriptor_list[NUM_DESC_LIST] = {
 	{0x0100, 0x0000, device_descriptor, sizeof(device_descriptor)},
 	{0x0200, 0x0000, config1_descriptor, sizeof(config1_descriptor)},
@@ -164,5 +194,7 @@ struct descriptor_list_struct PROGMEM descriptor_list[NUM_DESC_LIST] = {
 	{0x0301, 0x0409, (const uint8_t *)&string1, sizeof(STR_MANUFACTURER)},
 	{0x0302, 0x0409, (const uint8_t *)&string2, sizeof(STR_PRODUCT)}
 };
-// #define NUM_DESC_LIST (sizeof(descriptor_list)/sizeof(struct descriptor_list_struct))
 
+interface_t * interfaces[NUM_INTERFACES] = {
+    &boot_keyboard,
+};

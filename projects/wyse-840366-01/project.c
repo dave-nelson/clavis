@@ -20,6 +20,7 @@
 #include "project.h"
 #include "../../common/matrix.h"
 #include "../../common/led.h"
+#include "../../common/keyboard.h"
 
 /**
  * Based on the settings in project.h, initialise all the statics declared by matrix.h.
@@ -92,7 +93,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     /* 2 (pin 11) */
     { KEY_UP, }, 
     { KEYPAD_6, }, 
-    { KEYPAD_ASTERIX, },  /* "PF3" */
+    { KEYPAD_STAR, },  /* "PF3" */
     { KEY_C, }, 
     { KEY_0, }, 
     { KEY_W, }, 
@@ -114,20 +115,20 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEYPAD_2, }, 
     { KEYPAD_7, }, 
     { KEY_V, }, 
-    { KEY_EQUAL, }, 
+    { KEY_EQUALS, }, 
     { KEY_Q, }, 
     { KEY_SPACE, }, 
     { KEY_F5, }, 
 
     /* 5 (pin 14) */
     { KEY_SCROLL_LOCK, }, 
-    { KEY_PRINTSCREEN, }, 
+    { KEY_PRINT_SCREEN, }, 
     { 0x00, }, /* "F17" */ 
-    { KEY_ESC, },  /* Wyse "Do" */
-    { 0x00, KEY_RIGHT_GUI },  /* Wyse "Help" */
+    { KEY_ESCAPE, },  /* Wyse "Do" */
+    { KEY_RIGHT_GUI, },  /* Wyse "Help" */
     { 0x00, },  /* "F14" */ 
     { 0x00, },  /* "F13" */
-    { 0x00, KEY_ALT},  /* Wyse "Compose Character" */
+    { KEY_ALT, },  /* Wyse "Compose Character" */
 
     /* 6 (pin 15) */
     { KEY_RIGHT, }, 
@@ -136,14 +137,14 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEY_BACKSPACE, }, 
     { KEY_P, }, 
     { KEY_HOME, },  /* Wyse "Insert Here" */ 
-    { 0x00, KEY_CTRL }, 
+    { KEY_CONTROL, }, 
     { KEY_F7, }, 
 
     /* 7 (pin 16) */
     { KEY_L, }, 
     { KEY_K, }, 
     { KEY_J, }, 
-    { 0x00, KEY_SHIFT, }, 
+    { KEY_SHIFT, }, 
     { KEY_H, },
     { KEY_G, },
     { KEY_PAUSE, },
@@ -184,7 +185,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEY_PERIOD, }, 
     { KEY_COMMA, }, 
     { KEY_DELETE, },   /* Select */
-    { KEY_TILDE, }, 
+    { KEY_BACKQUOTE, }, 
     { KEY_Y, }, 
     { KEY_A, }, 
     { KEY_F9, }, 

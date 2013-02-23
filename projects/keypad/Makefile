@@ -44,11 +44,12 @@
 TARGET = clavis
 
 COMMON_DIR = ../../common
-COMMON_SRC = $(COMMON_DIR)/clavis.c 		\
-	     $(COMMON_DIR)/device.c		\
-	     $(COMMON_DIR)/usb_keyboard.c	\
-	     $(COMMON_DIR)/matrix.c		\
-	     $(COMMON_DIR)/led.c
+COMMON_SRC = $(COMMON_DIR)/boot_keyboard.c	\
+	$(COMMON_DIR)/clavis.c 			\
+	$(COMMON_DIR)/device.c			\
+	$(COMMON_DIR)/led.c			\
+	$(COMMON_DIR)/matrix.c			\
+	$(COMMON_DIR)/usb_keyboard.c
 # List C source files here. (C dependencies are automatically generated.)
 SRC =	project.c
 

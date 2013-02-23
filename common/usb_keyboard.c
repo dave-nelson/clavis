@@ -28,7 +28,6 @@
 #include "usb_keyboard.h"
 #include "device.h"
 
-
 /**************************************************************************
  *
  *  Variables - these are the only non-stack RAM usage
@@ -38,29 +37,19 @@
 // zero when we are not configured, non-zero when enumerated
 static volatile uint8_t usb_configuration=0;
 
-// which modifier keys are currently pressed
-// 1=left ctrl,    2=left shift,   4=left alt,    8=left gui
-// 16=right ctrl, 32=right shift, 64=right alt, 128=right gui
-uint8_t keyboard_modifier_keys=0;
-
-// which keys are currently pressed, up to 6 keys may be down at once
-uint8_t keyboard_keys[6]={0,0,0,0,0,0};
-
-// protocol setting from the host.  We use exactly the same report
-// either way, so this variable only stores the setting since we
-// are required to be able to report which setting is in use.
-static uint8_t keyboard_protocol=1;
-
 // the idle configuration, how often we send the report to the
 // host (ms * 4) even when it hasn't changed
-static uint8_t keyboard_idle_config=125;
+static uint8_t idle_config=125;
 
 // count until idle timeout
-static uint8_t keyboard_idle_count=0;
+static uint8_t idle_count=0;
 
 // 1=num lock, 2=caps lock, 4=scroll lock, 8=compose, 16=kana
-volatile uint8_t keyboard_leds=0;
+// volatile uint8_t keyboard_leds=0;
 
+static void interface_send_in (interface_t * iface);
+
+static void interface_receive_out (interface_t * iface);
 
 /**************************************************************************
  *
@@ -90,30 +79,15 @@ uint8_t usb_configured(void)
 	return usb_configuration;
 }
 
-
-// perform a single keystroke
-int8_t usb_keyboard_press(uint8_t key, uint8_t modifier)
+int8_t 
+interface_send (interface_t * iface)
 {
-	int8_t r;
-
-	keyboard_modifier_keys = modifier;
-	keyboard_keys[0] = key;
-	r = usb_keyboard_send();
-	if (r) return r;
-	keyboard_modifier_keys = 0;
-	keyboard_keys[0] = 0;
-	return usb_keyboard_send();
-}
-
-// send the contents of keyboard_keys and keyboard_modifier_keys
-int8_t usb_keyboard_send(void)
-{
-	uint8_t i, intr_state, timeout;
+	uint8_t intr_state, timeout;
 
 	if (!usb_configuration) return -1;
 	intr_state = SREG;
 	cli();
-	UENUM = KEYBOARD_ENDPOINT;
+	UENUM = iface->endpoint;
 	timeout = UDFNUML + 50;
 	while (1) {
 		// are we ready to transmit?
@@ -126,15 +100,11 @@ int8_t usb_keyboard_send(void)
 		// get ready to try checking again
 		intr_state = SREG;
 		cli();
-		UENUM = KEYBOARD_ENDPOINT;
+		UENUM = iface->endpoint;
 	}
-	UEDATX = keyboard_modifier_keys;
-	UEDATX = 0;
-	for (i=0; i<6; i++) {
-		UEDATX = keyboard_keys[i];
-	}
+        interface_send_in (iface);
 	UEINTX = 0x3A;
-	keyboard_idle_count = 0;
+	idle_count = 0;
 	SREG = intr_state;
 	return 0;
 }
@@ -152,36 +122,37 @@ int8_t usb_keyboard_send(void)
 //
 ISR(USB_GEN_vect)
 {
-	uint8_t intbits, t, i;
-	static uint8_t div4=0;
+    uint8_t intbits;
+    static uint8_t div4=0;
+    interface_t * iface;
+    uint8_t inum;
 
-        intbits = UDINT;
-        UDINT = 0;
-        if (intbits & (1<<EORSTI)) {
-		UENUM = 0;
-		UECONX = 1;
-		UECFG0X = EP_TYPE_CONTROL;
-		UECFG1X = EP_SIZE(ENDPOINT0_SIZE) | EP_SINGLE_BUFFER;
-		UEIENX = (1<<RXSTPE);
-		usb_configuration = 0;
+    intbits = UDINT;
+    UDINT = 0;
+    if (intbits & (1<<EORSTI)) {
+        UENUM = 0;
+        UECONX = 1;
+        UECFG0X = EP_TYPE_CONTROL;
+        UECFG1X = EP_SIZE(ENDPOINT0_SIZE) | EP_SINGLE_BUFFER;
+        UEIENX = (1<<RXSTPE);
+        usb_configuration = 0;
+    }
+    if ((intbits & (1<<SOFI)) && usb_configuration) {
+        if (idle_config && (++div4 & 3) == 0) {
+            for ( inum = 0; inum < NUM_INTERFACES; inum++ ) {
+                iface = interfaces[inum];
+                UENUM = iface->endpoint;
+                if (UEINTX & (1<<RWAL)) {
+                    idle_count++;
+                    if (idle_count == idle_config) {
+                        interface_send_in (iface);
+                        idle_count = 0;
+                        UEINTX = 0x3A;
+                    }
+                }
+            }
         }
-	if ((intbits & (1<<SOFI)) && usb_configuration) {
-		if (keyboard_idle_config && (++div4 & 3) == 0) {
-			UENUM = KEYBOARD_ENDPOINT;
-			if (UEINTX & (1<<RWAL)) {
-				keyboard_idle_count++;
-				if (keyboard_idle_count == keyboard_idle_config) {
-					keyboard_idle_count = 0;
-					UEDATX = keyboard_modifier_keys;
-					UEDATX = 0;
-					for (i=0; i<6; i++) {
-						UEDATX = keyboard_keys[i];
-					}
-					UEINTX = 0x3A;
-				}
-			}
-		}
-	}
+    }
 }
 
 
@@ -191,20 +162,39 @@ static inline void usb_wait_in_ready(void)
 {
 	while (!(UEINTX & (1<<TXINI))) ;
 }
+
+static void 
+interface_send_in (interface_t * iface)
+{
+    uint8_t i;
+    for ( i = 0; i < iface->size_in_data; i++ ) {
+        UEDATX = iface->in_data[i];
+    }
+}
+
 static inline void usb_send_in(void)
 {
 	UEINTX = ~(1<<TXINI);
 }
+
+static void
+interface_receive_out (interface_t * iface)
+{
+    uint8_t i;
+    for ( i = 0; i < iface->size_out_data; i++ ) {
+        iface->out_data[i] = UEDATX;
+    }
+}
+
 static inline void usb_wait_receive_out(void)
 {
 	while (!(UEINTX & (1<<RXOUTI))) ;
 }
+
 static inline void usb_ack_out(void)
 {
 	UEINTX = ~(1<<RXOUTI);
 }
-
-
 
 // USB Endpoint Interrupt - endpoint 0 is handled here.  The
 // other endpoints are manipulated by the user-callable
@@ -224,6 +214,7 @@ ISR(USB_COM_vect)
 	uint16_t desc_val;
 	const uint8_t *desc_addr;
 	uint8_t	desc_length;
+        interface_t * iface;
 
         UENUM = 0;
 	intbits = UEINTX;
@@ -342,27 +333,25 @@ ISR(USB_COM_vect)
 			}
 		}
 		#endif
-		if (wIndex == KEYBOARD_INTERFACE) {
+		if (wIndex >= 0 && wIndex < NUM_INTERFACES) {
+                    iface = interfaces[wIndex];
+
 			if (bmRequestType == 0xA1) {
 				if (bRequest == HID_GET_REPORT) {
 					usb_wait_in_ready();
-					UEDATX = keyboard_modifier_keys;
-					UEDATX = 0;
-					for (i=0; i<6; i++) {
-						UEDATX = keyboard_keys[i];
-					}
+                                        interface_send_in (iface);
 					usb_send_in();
 					return;
 				}
 				if (bRequest == HID_GET_IDLE) {
 					usb_wait_in_ready();
-					UEDATX = keyboard_idle_config;
+					UEDATX = idle_config;
 					usb_send_in();
 					return;
 				}
 				if (bRequest == HID_GET_PROTOCOL) {
 					usb_wait_in_ready();
-					UEDATX = keyboard_protocol;
+					UEDATX = iface->protocol;
 					usb_send_in();
 					return;
 				}
@@ -370,19 +359,19 @@ ISR(USB_COM_vect)
 			if (bmRequestType == 0x21) {
 				if (bRequest == HID_SET_REPORT) {
 					usb_wait_receive_out();
-					keyboard_leds = UEDATX;
+                                        interface_receive_out (iface);
 					usb_ack_out();
 					usb_send_in();
 					return;
 				}
 				if (bRequest == HID_SET_IDLE) {
-					keyboard_idle_config = (wValue >> 8);
-					keyboard_idle_count = 0;
+					idle_config = (wValue >> 8);
+					idle_count = 0;
 					usb_send_in();
 					return;
 				}
 				if (bRequest == HID_SET_PROTOCOL) {
-					keyboard_protocol = wValue;
+					iface->protocol = wValue;
 					usb_send_in();
 					return;
 				}
@@ -391,5 +380,3 @@ ISR(USB_COM_vect)
 	}
 	UECONX = (1<<STALLRQ) | (1<<EPEN);	// stall
 }
-
-
