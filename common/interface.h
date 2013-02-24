@@ -22,6 +22,16 @@
 
 #include <stdint.h>
 
+/**
+ * The data structure that defines interfaces, including an endpoint with data 
+ * to be sent and received.
+ *
+ * When communication with the host is initiated, "endpoint" indicates the 
+ * endpoint number to be used, "size_in_data" and "size_out_data" indicate how 
+ * much data is to be written in to or read out from (resp.) the host.  This 
+ * information is provided by the implementer of an interface, and is typically 
+ * used by the USB implementation (usb.[ch]).
+ */
 typedef struct interface_ {
     uint8_t endpoint;
     uint8_t protocol;

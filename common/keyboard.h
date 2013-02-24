@@ -21,7 +21,10 @@
 #define KEYBOARD_H
 
 /**
- * Keyboard usage, as per chapter 10 of "Universal Serial Bus HID Usage Tables".
+ * Keyboard usage, as per chapter 10 of the USB HID specification.
+ *
+ * See "Universal Serial Bus (USB) HID Usage Tables", version 1.12, p.53 
+ * onwards.
  */
 
 enum {

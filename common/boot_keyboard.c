@@ -43,17 +43,18 @@ interface_t boot_keyboard = {
     out_data,
 };
 
-// perform a single keystroke
 int8_t boot_keyboard_press(uint8_t key, uint8_t modifier)
 {
 	int8_t r;
 
+        boot_keyboard_clear ();
+
 	in_data[0] = modifier;
-	in_data[2] = key;
+	boot_keyboard_set_key (key);
 	r = boot_keyboard_send();
 	if (r) return r;
-	in_data[0] = 0;
-	in_data[2] = 0;
+
+        boot_keyboard_clear ();
 	return boot_keyboard_send();
 }
 
