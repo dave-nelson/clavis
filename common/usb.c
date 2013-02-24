@@ -25,7 +25,7 @@
 // Version 1.1: Add support for Teensy 2.0
 
 #define USB_SERIAL_PRIVATE_INCLUDE
-#include "usb_keyboard.h"
+#include "usb.h"
 #include "device.h"
 
 /**************************************************************************

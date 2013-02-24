@@ -20,7 +20,7 @@
 #include "boot_keyboard.h"
 #include "device.h"
 #include "keyboard.h"
-#include "usb_keyboard.h"
+#include "usb.h"
 
 #define SIZE_IN_DATA 8
 static uint8_t in_data[SIZE_IN_DATA];

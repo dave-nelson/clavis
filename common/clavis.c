@@ -21,7 +21,7 @@
 #include <avr/pgmspace.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "usb_keyboard.h"
+#include "usb.h"
 #include "matrix.h"
 #include "led.h"
 #include "project.h"
@@ -39,7 +39,6 @@ int main(void)
         _delay_ms (10);
     }
     _delay_ms(1000);
-    // boot_keyboard_press (KEY_A, 0); 
     while (1) { 
         Matrix_scan ();
         Led_set ();

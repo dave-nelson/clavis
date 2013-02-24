@@ -18,7 +18,7 @@
  */
 
 #include "led.h"
-#include "usb_keyboard.h"
+#include "usb.h"
 #include "boot_keyboard.h"
 
 void

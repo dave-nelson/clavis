@@ -19,7 +19,7 @@
 
 #include "device.h"
 #define USB_SERIAL_PRIVATE_INCLUDE
-#include "usb_keyboard.h"
+#include "usb.h"
 #include "boot_keyboard.h"
 
 // You can change these to give your code its own name.

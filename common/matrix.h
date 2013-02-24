@@ -24,7 +24,7 @@
 
 #include <avr/io.h>
 #include <stdbool.h>
-#include "usb_keyboard.h"
+#include "usb.h"
 #include "project.h"
 
 /**
