@@ -19,6 +19,7 @@
 
 #include "matrix.h"
 #include "boot_keyboard.h"
+#include "nkro_keyboard.h"
 #include <util/delay.h>
 
 bool selection[NUM_COLS * NUM_ROWS] = { 0, };
@@ -85,12 +86,14 @@ Matrix_send (void)
                 key = &(matrix[ KEY_NUM(i_col, i_row) ]);
                 if ( key->code ) {
                     boot_keyboard_set_key (key->code);
+                    nkro_keyboard_set_key (key->code);
                 }
                 /* else ignore unused key */
             }
         }
     }
     boot_keyboard_send ();
+    nkro_keyboard_send ();
 }
 
 void

@@ -49,6 +49,7 @@ COMMON_SRC = $(COMMON_DIR)/boot_keyboard.c	\
 	$(COMMON_DIR)/device.c			\
 	$(COMMON_DIR)/led.c			\
 	$(COMMON_DIR)/matrix.c			\
+	$(COMMON_DIR)/nkro_keyboard.c		\
 	$(COMMON_DIR)/usb.c
 # List C source files here. (C dependencies are automatically generated.)
 SRC =	project.c

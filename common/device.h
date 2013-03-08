@@ -40,6 +40,7 @@ struct descriptor_list_struct {
  */
 enum {
     KEYBOARD_INTERFACE = 0,
+    NKRO_KEYBOARD_INTERFACE,
     NUM_INTERFACES,
     INVALID_INTERFACE = NUM_INTERFACES,
 };
@@ -51,6 +52,7 @@ extern interface_t * interfaces[NUM_INTERFACES];
 enum {
     CONTROL_ENDPOINT,  /* provided by the controller */
     KEYBOARD_ENDPOINT, /* for KEYBOARD_INTERFACE */
+    NKRO_KEYBOARD_ENDPOINT,
     NUM_ENDPOINTS,
     INVALID_ENDPOINT = NUM_ENDPOINTS,
 };
@@ -58,16 +60,18 @@ enum {
 #define KEYBOARD_SIZE		8
 #define KEYBOARD_BUFFER		EP_DOUBLE_BUFFER
 
+#define NKRO_KEYBOARD_SIZE      32
+#define NKRO_KEYBOARD_BUFFER    EP_DOUBLE_BUFFER
 
 #define ENDPOINT0_SIZE		32
-#define ENDPOINT_CONFIG_SIZE 6
+#define ENDPOINT_CONFIG_SIZE 8
 extern const uint8_t endpoint_config_table[ENDPOINT_CONFIG_SIZE];
 
 /**
  * This table defines which descriptor data is sent for each specific
  * request from the host (in wValue and wIndex).
  */
-#define NUM_DESC_LIST 7
+#define NUM_DESC_LIST 9
 extern struct descriptor_list_struct descriptor_list[NUM_DESC_LIST];
 
 #endif
