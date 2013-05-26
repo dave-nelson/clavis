@@ -1,4 +1,7 @@
-SUBDIRS = projects/wyse-840366-01 projects/keypad
+SUBDIRS = projects/keypad	 	\
+	  projects/wyse-840358-01	\
+	  projects/wyse-840366-01
+
 SUBCLEAN = $(addsuffix .clean,$(SUBDIRS))
 
 .PHONY: subdirs $(SUBDIRS) clean $(SUBCLEAN)
