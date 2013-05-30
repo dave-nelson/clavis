@@ -44,23 +44,23 @@ struct usb_string_descriptor_struct {
 // If you're desperate for a little extra code memory, these strings
 // can be completely removed if iManufacturer, iProduct, iSerialNumber
 // in the device desciptor are changed to zeros.
-static struct usb_string_descriptor_struct PROGMEM string0 = {
+static struct usb_string_descriptor_struct const PROGMEM string0 = {
 	4,
 	3,
 	{0x0409}
 };
-static struct usb_string_descriptor_struct PROGMEM string1 = {
+static struct usb_string_descriptor_struct const PROGMEM string1 = {
 	sizeof(STR_MANUFACTURER),
 	3,
 	STR_MANUFACTURER
 };
-static struct usb_string_descriptor_struct PROGMEM string2 = {
+static struct usb_string_descriptor_struct const PROGMEM string2 = {
 	sizeof(STR_PRODUCT),
 	3,
 	STR_PRODUCT
 };
 
-const uint8_t PROGMEM endpoint_config_table[ENDPOINT_CONFIG_SIZE] = {
+const uint8_t const PROGMEM endpoint_config_table[ENDPOINT_CONFIG_SIZE] = {
     // Endpoint 1
     1, EP_TYPE_INTERRUPT_IN,  EP_SIZE(KEYBOARD_SIZE) | KEYBOARD_BUFFER,
     // Endpoint 2
@@ -92,7 +92,7 @@ const uint8_t PROGMEM endpoint_config_table[ENDPOINT_CONFIG_SIZE] = {
 // in here should only be done by those who've read chapter 9 of the USB
 // spec and relevant portions of any USB class specifications!
 
-static uint8_t PROGMEM device_descriptor[] = {
+static uint8_t const PROGMEM device_descriptor[] = {
 	18,					// bLength
 	1,					// bDescriptorType
 	0x00, 0x02,				// bcdUSB
@@ -110,7 +110,7 @@ static uint8_t PROGMEM device_descriptor[] = {
 };
 
 // Keyboard Protocol 1, HID 1.11 spec, Appendix B, page 59-60
-static uint8_t PROGMEM keyboard_hid_report_desc[] = {
+static uint8_t const PROGMEM keyboard_hid_report_desc[] = {
         0x05, 0x01,          // Usage Page (Generic Desktop),
         0x09, 0x06,          // Usage (Keyboard),
         0xA1, 0x01,          // Collection (Application),
@@ -145,7 +145,7 @@ static uint8_t PROGMEM keyboard_hid_report_desc[] = {
         0xc0                 // End Collection
 };
 
-static uint8_t PROGMEM nkro_keyboard_hid_report_desc[] = {
+static uint8_t const PROGMEM nkro_keyboard_hid_report_desc[] = {
     0x05, 0x01,         /*  Usage Page (Desktop),                       */
     0x09, 0x06,         /*  Usage (Keyboard),                           */
     0xA1, 0x01,         /*  Collection (Application),                   */
@@ -227,7 +227,7 @@ static uint8_t PROGMEM nkro_keyboard_hid_report_desc[] = {
 #define CONFIG1_DESC_SIZE               (9 + KEYBOARD_CONFIG_SIZE + NKRO_KEYBOARD_CONFIG_SIZE)
 #define KEYBOARD_HID_DESC_OFFSET        (9 + 9)
 #define NKRO_KEYBOARD_HID_DESC_OFFSET   (9 + KEYBOARD_CONFIG_SIZE + 9)
-static uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
+static uint8_t const PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	// configuration descriptor, USB spec 9.6.3, page 264-266, Table 9-10
 	9, 					// bLength;
 	2,					// bDescriptorType;
@@ -294,7 +294,7 @@ static uint8_t PROGMEM config1_descriptor[CONFIG1_DESC_SIZE] = {
 	1					// bInterval
 };
 
-struct descriptor_list_struct PROGMEM descriptor_list[NUM_DESC_LIST] = {
+struct descriptor_list_struct const PROGMEM descriptor_list[NUM_DESC_LIST] = {
 	{0x0100, 0x0000, device_descriptor, sizeof(device_descriptor)},
 	{0x0200, 0x0000, config1_descriptor, sizeof(config1_descriptor)},
 	{0x2200, KEYBOARD_INTERFACE, keyboard_hid_report_desc, sizeof(keyboard_hid_report_desc)},

@@ -72,6 +72,6 @@ extern const uint8_t endpoint_config_table[ENDPOINT_CONFIG_SIZE];
  * request from the host (in wValue and wIndex).
  */
 #define NUM_DESC_LIST 9
-extern struct descriptor_list_struct descriptor_list[NUM_DESC_LIST];
+extern struct descriptor_list_struct const descriptor_list[NUM_DESC_LIST];
 
 #endif
