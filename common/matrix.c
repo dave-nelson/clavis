@@ -79,6 +79,7 @@ Matrix_send (void)
 
     // keyboard_modifier_keys = 0;
     boot_keyboard_clear ();
+    nkro_keyboard_clear ();
 
     for ( i_col = 0; i_col < NUM_COLS; i_col++ ) {
         for ( i_row = 0; i_row < NUM_ROWS; i_row++ ) {
