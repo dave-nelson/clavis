@@ -116,7 +116,7 @@ Key matrix[NUM_ROWS * NUM_COLS] = {
     { KEYPAD_MINUS },
     { KEYPAD_STAR },
     { KEY_QUOTE },
-    { KEY_SELECT },
+    { KEY_GUI },
     { KEY_RIGHT_CONTROL },
     { KEY_SPACE },
 
