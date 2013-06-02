@@ -83,4 +83,9 @@
  */
 #define DE_GHOST 0
 
+/**
+ * Should the normal state of the LEDs be reversed (on is off/off is on)?
+ */
+#define LED_REVERSE 0
+
 #endif

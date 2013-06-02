@@ -28,12 +28,15 @@ Led_set (void)
     uint8_t keyboard_leds;
     uint8_t i_led;
     Led led;
+    uint8_t set_on = 0;
     
     keyboard_leds = boot_keyboard_get_leds ();
     if ( last_keyboard_leds != keyboard_leds ) {
         for ( i_led = 0; i_led < NUM_LEDS; i_led++ ) {
             led = leds[i_led];
-            if ( keyboard_leds & led.flag ) {
+            set_on = (keyboard_leds & led.flag) ? 1 : 0;
+            set_on ^= LED_REVERSE;
+            if ( set_on ) {
                 *(led.port) |= (1 << led.pin);
             }
             else {
