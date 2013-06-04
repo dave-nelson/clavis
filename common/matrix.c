@@ -37,6 +37,14 @@ Matrix_ports_init (void)
     }
 }
 
+static uint8_t active_keyboard = KEYBOARD_INTERFACE;
+
+void
+Matrix_set_active_keyboard (uint8_t keyboard_num)
+{
+    active_keyboard = keyboard_num;
+}
+
 bool
 Matrix_block (void)
 {
@@ -77,7 +85,6 @@ Matrix_send (void)
     Key * key;
     uint8_t i_col, i_row;
 
-    // keyboard_modifier_keys = 0;
     boot_keyboard_clear ();
     nkro_keyboard_clear ();
 
@@ -93,8 +100,13 @@ Matrix_send (void)
             }
         }
     }
-    boot_keyboard_send ();
-    nkro_keyboard_send ();
+    switch ( active_keyboard ) {
+        case NKRO_KEYBOARD_INTERFACE:
+            nkro_keyboard_send ();
+            break;
+        default:
+            boot_keyboard_send ();
+    }
 }
 
 void

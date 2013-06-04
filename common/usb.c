@@ -216,6 +216,8 @@ ISR(USB_COM_vect)
 	uint8_t	desc_length;
         interface_t * iface;
 
+        static uint8_t nkro_mode = 0;
+
         UENUM = 0;
 	intbits = UEINTX;
         if (intbits & (1<<RXSTPI)) {
@@ -228,6 +230,14 @@ ISR(USB_COM_vect)
                 wLength = UEDATX;
                 wLength |= (UEDATX << 8);
                 UEINTX = ~((1<<RXSTPI) | (1<<RXOUTI) | (1<<TXINI));
+
+                /* Interrupt related to NKRO interface: host is aware, so 
+                 * enable it. */
+                if ( !nkro_mode && wIndex == NKRO_KEYBOARD_INTERFACE ) {
+                    Matrix_set_active_keyboard (NKRO_KEYBOARD_INTERFACE);
+                    nkro_mode = 1;
+                }
+
                 if (bRequest == GET_DESCRIPTOR) {
 			list = (const uint8_t *)descriptor_list;
 			for (i=0; ; i++) {

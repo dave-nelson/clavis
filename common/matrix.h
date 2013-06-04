@@ -103,6 +103,11 @@ extern uint8_t samples_mask;
 void Matrix_ports_init (void);
 
 /**
+ * Set the active keyboard.
+ */
+void Matrix_set_active_keyboard (uint8_t keyboard_num);
+
+/**
  * Scan the key matrix, updating the state of any keys as appropriate.
  */
 void Matrix_scan (void);
