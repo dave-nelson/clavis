@@ -237,7 +237,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: white">
     <td style="background: lightgreen"> 9<br/>D0 </td>
-
     <td> Num 7 </td>
     <td> Num . </td>
     <td> K </td>
@@ -250,7 +249,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: lightgrey">
     <td style="background: lightgreen"> 10<br/>D1 </td>
-
     <td> Num + </td>
     <td> = / + </td>
     <td> Enter </td>
@@ -263,7 +261,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: white">
     <td style="background: lightgreen"> 11<br/>D2 </td>
-
     <td> Num Enter </td>
     <td> , / &lt; </td>
     <td> F12 </td>
@@ -276,7 +273,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: lightgrey">
     <td style="background: lightgreen"> 12<br/>D3 </td>
-
     <td> Num . </td>
     <td> F11 </td>
     <td> / / ? </td>
@@ -289,7 +285,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: white">
     <td style="background: lightgreen"> 13<br/>D4 </td>
-
     <td> Num 0 </td>
     <td> Num 9 </td>
     <td> Num - </td>
@@ -314,7 +309,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: white">
     <td style="background: lightgreen"> 15<br/>D7 </td>
-
     <td> Num 2 </td>
     <td> M </td>
     <td> H </td>
@@ -327,7 +321,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: lightgrey">
     <td style="background: lightgreen"> 16<br/>F0 </td>
-
     <td> Num 1 </td>
     <td> B </td>
     <td> J </td>
@@ -345,7 +338,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: lightgrey">
     <td style="background: lightgreen"> 24<br/>F1 </td>
-
     <td> Num 8 </td>
     <td> F9 </td>
     <td> A </td>
@@ -358,7 +350,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: white">
     <td style="background: lightgreen"> 25<br/>F4 </td>
-
     <td> Num 6 </td>
     <td> C </td>
     <td> S </td>
@@ -371,7 +362,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: lightgrey">
     <td style="background: lightgreen"> 26<br/>F5 </td>
-
     <td> Num 5 </td>
     <td> X </td>
     <td> F </td>
@@ -396,7 +386,6 @@ For the Teensy USB implementation the following ports were used.
 
   <tr style="background: lightgrey">
     <td style="background: lightgreen"> 28<br/>F7 </td>
-
     <td> Num 3 </td>
     <td> N </td>
     <td> G </td>
